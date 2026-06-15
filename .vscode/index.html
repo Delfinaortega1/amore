@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMORE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ——— OVERLAY DE PROYECCIÓN ——— */
+#proyeccion-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.5s ease;
+}
+#proyeccion-overlay.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+#proyeccion-overlay iframe {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 100vw;
+  height: 56.25vw;
+  min-height: 100vh;
+  min-width: 177.78vh;
+  transform: translate(-50%, -50%);
+  border: none;
+}
+</style>
+</head>
+<body>
+
+<h1>AMORE</h1>
+
+<!-- OVERLAY DE VIDEO — aparece encima de todo -->
+<div id="proyeccion-overlay">
+  <iframe id="proyeccion-frame" allow="autoplay; fullscreen" allowfullscreen></iframe>
+</div>
+
+<div id="huellaA" class="huella" onclick="activarPersonaA()">
+  <div class="huella-inner">
+    <svg viewBox="0 0 60 90" width="50" height="75" fill="none">
+      <ellipse cx="30" cy="72" rx="22" ry="16" fill="currentColor" opacity="0.5"/>
+      <ellipse cx="14" cy="52" rx="7" ry="11" fill="currentColor" opacity="0.4"/>
+      <ellipse cx="26" cy="46" rx="6" ry="10" fill="currentColor" opacity="0.35"/>
+      <ellipse cx="38" cy="48" rx="6" ry="9" fill="currentColor" opacity="0.35"/>
+      <ellipse cx="48" cy="54" rx="5" ry="8" fill="currentColor" opacity="0.3"/>
+      <ellipse cx="54" cy="62" rx="4" ry="6" fill="currentColor" opacity="0.25"/>
+    </svg>
+    <span class="huella-label">A</span>
+  </div>
+</div>
+
+<div id="huellaB" class="huella" onclick="activarPersonaB()">
+  <div class="huella-inner">
+    <svg viewBox="0 0 60 90" width="50" height="75" fill="none">
+      <ellipse cx="30" cy="72" rx="22" ry="16" fill="currentColor" opacity="0.5"/>
+      <ellipse cx="46" cy="52" rx="7" ry="11" fill="currentColor" opacity="0.4"/>
+      <ellipse cx="34" cy="46" rx="6" ry="10" fill="currentColor" opacity="0.35"/>
+      <ellipse cx="22" cy="48" rx="6" ry="9" fill="currentColor" opacity="0.35"/>
+      <ellipse cx="12" cy="54" rx="5" ry="8" fill="currentColor" opacity="0.3"/>
+      <ellipse cx="6" cy="62" rx="4" ry="6" fill="currentColor" opacity="0.25"/>
+    </svg>
+    <span class="huella-label">B</span>
+  </div>
+</div>
+
+<div id="flor-wrapper">
+  <svg id="flor" viewBox="-220 -230 440 400" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="grad-off" cx="50%" cy="75%" r="70%">
+        <stop offset="0%" stop-color="#1e0c35"/>
+        <stop offset="100%" stop-color="#0a0514"/>
+      </radialGradient>
+      <radialGradient id="grad-a" cx="50%" cy="65%" r="85%">
+        <stop offset="0%" stop-color="#9b5de5"/>
+        <stop offset="50%" stop-color="#4a1a8e"/>
+        <stop offset="100%" stop-color="#15062a"/>
+      </radialGradient>
+      <radialGradient id="grad-b" cx="50%" cy="65%" r="85%">
+        <stop offset="0%" stop-color="#00f5d4"/>
+        <stop offset="50%" stop-color="#006e6e"/>
+        <stop offset="100%" stop-color="#01131a"/>
+      </radialGradient>
+      <radialGradient id="grad-conexion" cx="50%" cy="60%" r="90%">
+        <stop offset="0%" stop-color="#ffffff"/>
+        <stop offset="25%" stop-color="#f8c6ff"/>
+        <stop offset="60%" stop-color="#9b5de5"/>
+        <stop offset="100%" stop-color="#2a0a50"/>
+      </radialGradient>
+      <filter id="glow-s">
+        <feGaussianBlur stdDeviation="5" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glow-f">
+        <feGaussianBlur stdDeviation="14" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glow-xl">
+        <feGaussianBlur stdDeviation="22" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+
+    <g id="p1" style="transform-origin:0px 0px; transform:rotate(-62deg)">
+      <path class="pf" d="M0,0 C-28,-45,-52,-105,-36,-165 C-24,-200,-8,-215,0,-215 C8,-215,24,-200,36,-165 C52,-105,28,-45,0,0 Z" fill="url(#grad-off)"/>
+      <path class="pn" d="M0,-5 C0,-80,0,-150,0,-210" stroke="rgba(160,80,255,0.12)" stroke-width="1.5" fill="none"/>
+      <path class="pn" d="M0,-35 C-18,-90,-28,-140,-20,-175" stroke="rgba(160,80,255,0.07)" stroke-width="1" fill="none"/>
+      <path class="pn" d="M0,-35 C18,-90,28,-140,20,-175" stroke="rgba(160,80,255,0.07)" stroke-width="1" fill="none"/>
+      <path class="pb" d="M0,0 C-28,-45,-52,-105,-36,-165 C-24,-200,-8,-215,0,-215 C8,-215,24,-200,36,-165 C52,-105,28,-45,0,0 Z" fill="none" stroke="rgba(160,80,255,0.18)" stroke-width="0.8"/>
+    </g>
+    <g id="p5" style="transform-origin:0px 0px; transform:rotate(62deg)">
+      <path class="pf" d="M0,0 C-28,-45,-52,-105,-36,-165 C-24,-200,-8,-215,0,-215 C8,-215,24,-200,36,-165 C52,-105,28,-45,0,0 Z" fill="url(#grad-off)"/>
+      <path class="pn" d="M0,-5 C0,-80,0,-150,0,-210" stroke="rgba(160,80,255,0.12)" stroke-width="1.5" fill="none"/>
+      <path class="pn" d="M0,-35 C-18,-90,-28,-140,-20,-175" stroke="rgba(160,80,255,0.07)" stroke-width="1" fill="none"/>
+      <path class="pn" d="M0,-35 C18,-90,28,-140,20,-175" stroke="rgba(160,80,255,0.07)" stroke-width="1" fill="none"/>
+      <path class="pb" d="M0,0 C-28,-45,-52,-105,-36,-165 C-24,-200,-8,-215,0,-215 C8,-215,24,-200,36,-165 C52,-105,28,-45,0,0 Z" fill="none" stroke="rgba(160,80,255,0.18)" stroke-width="0.8"/>
+    </g>
+    <g id="p2" style="transform-origin:0px 0px; transform:rotate(-30deg)">
+      <path class="pf" d="M0,0 C-28,-45,-52,-105,-36,-165 C-24,-200,-8,-215,0,-215 C8,-215,24,-200,36,-165 C52,-105,28,-45,0,0 Z" fill="url(#grad-off)"/>
+      <path class="pn" d="M0,-5 C0,-80,0,-150,0,-210" stroke="rgba(160,80,255,0.12)" stroke-width="1.5" fill="none"/>
+      <path class="pn" d="M0,-35 C-18,-90,-28,-140,-20,-175" stroke="rgba(160,80,255,0.07)" stroke-width="1" fill="none"/>
+      <path class="pn" d="M0,-35 C18,-90,28,-140,20,-175" stroke="rgba(160,80,255,0.07)" stroke-width="1" fill="none"/>
+      <path class="pb" d="M0,0 C-28,-45,-52,-105,-36,-165 C-24,-200,-8,-215,0,-215 C8,-215,24,-200,36,-165 C52,-105,28,-45,0,0 Z" fill="none" stroke="rgba(160,80,255,0.18)" stroke-width="0.8"/>
+    </g>
+    <g id="p4" style="transform-origin:0px 0px; transform:rotate(30deg)">
+      <path class="pf" d="M0,0 C-28,-45,-52,-105,-36,-165 C-24,-200,-8,-215,0,-215 C8,-215,24,-200,36,-165 C52,-105,28,-45,0,0 Z" fill="url(#grad-off)"/>
+      <path class="pn" d="M0,-5 C0,-80,0,-150,0,-210" stroke="rgba(160,80,255,0.12)" stroke-width="1.5" fill="none"/>
+      <path class="pn" d="M0,-35 C-18,-90,-28,-140,-20,-175" stroke="rgba(160,80,255,0.07)" stroke-width="1" fill="none"/>
+      <path class="pn" d="M0,-35 C18,-90,28,-140,20,-175" stroke="rgba(160,80,255,0.07)" stroke-width="1" fill="none"/>
+      <path class="pb" d="M0,0 C-28,-45,-52,-105,-36,-165 C-24,-200,-8,-215,0,-215 C8,-215,24,-200,36,-165 C52,-105,28,-45,0,0 Z" fill="none" stroke="rgba(160,80,255,0.18)" stroke-width="0.8"/>
+    </g>
+    <g id="p3" style="transform-origin:0px 0px; transform:rotate(0deg)">
+      <path class="pf" d="M0,0 C-28,-45,-52,-105,-36,-165 C-24,-200,-8,-215,0,-215 C8,-215,24,-200,36,-165 C52,-105,28,-45,0,0 Z" fill="url(#grad-off)"/>
+      <path class="pn" d="M0,-5 C0,-80,0,-150,0,-210" stroke="rgba(160,80,255,0.12)" stroke-width="1.5" fill="none"/>
+      <path class="pn" d="M0,-35 C-18,-90,-28,-140,-20,-175" stroke="rgba(160,80,255,0.07)" stroke-width="1" fill="none"/>
+      <path class="pn" d="M0,-35 C18,-90,28,-140,20,-175" stroke="rgba(160,80,255,0.07)" stroke-width="1" fill="none"/>
+      <path class="pb" d="M0,0 C-28,-45,-52,-105,-36,-165 C-24,-200,-8,-215,0,-215 C8,-215,24,-200,36,-165 C52,-105,28,-45,0,0 Z" fill="none" stroke="rgba(160,80,255,0.18)" stroke-width="0.8"/>
+    </g>
+
+    <circle cx="0" cy="0" r="24" fill="#120824"/>
+    <circle cx="0" cy="0" r="18" fill="#1c0e38"/>
+    <circle cx="0" cy="0" r="11" fill="#2e1255"/>
+    <circle id="centro-glow" cx="0" cy="0" r="6" fill="#7b3fc4" opacity="0.3"/>
+
+    <path d="M-5,10 C-6,55,-9,110,-6,155 C-4,170,4,170,6,155 C9,110,6,55,5,10 Z"
+          fill="#130720" stroke="rgba(100,40,160,0.25)" stroke-width="0.8"/>
+  </svg>
+
+  <div id="particulas"></div>
+</div>
+
+<div id="sensor-tacto" onclick="activarConexion()">
+  <div id="sensor-ring"></div>
+  <span id="sensor-icon">✦</span>
+</div>
+
+<div id="estado">
+  <div id="estado-linea"></div>
+  <p id="estado-texto">Sitúate sobre las huellas</p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

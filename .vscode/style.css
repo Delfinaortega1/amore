@@ -1,0 +1,312 @@
+/* ===================== */
+/*   AMORE — style.css   */
+/* ===================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap');
+
+:root {
+  --violeta: #9b5de5;
+  --violeta-dark: #2a0a50;
+  --cyan: #00f5d4;
+  --blanco: #f8f0ff;
+  --negro: #050208;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--negro);
+  color: var(--blanco);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  /* fondo con textura sutil */
+  background-image:
+    radial-gradient(ellipse at 50% 60%, #1a0535 0%, transparent 65%),
+    radial-gradient(ellipse at 20% 80%, #0d0220 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, #0d0220 0%, transparent 50%);
+}
+
+/* ——— TÍTULO ——— */
+
+h1 {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.55em;
+  text-transform: uppercase;
+  color: rgba(200, 160, 255, 0.4);
+  font-style: italic;
+  user-select: none;
+}
+
+/* ——— HUELLAS ——— */
+
+.huella {
+  position: absolute;
+  bottom: 60px;
+  cursor: pointer;
+  color: rgba(155, 93, 229, 0.35);
+  transition: color 0.6s, transform 0.4s;
+  user-select: none;
+}
+
+.huella:hover { color: rgba(155, 93, 229, 0.6); transform: scale(1.05); }
+
+#huellaA { left: 10vw; }
+#huellaB { right: 10vw; }
+
+.huella-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.huella-label {
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  color: rgba(180, 120, 255, 0.3);
+  text-transform: uppercase;
+}
+
+.huella.activa {
+  color: rgba(155, 93, 229, 0.9);
+}
+
+.huella.activa .huella-label {
+  color: rgba(155, 93, 229, 0.8);
+  text-shadow: 0 0 12px var(--violeta);
+}
+
+/* ——— FLOR ——— */
+
+#flor-wrapper {
+  position: relative;
+  width: min(55vw, 55vh);
+  height: min(55vw, 55vh);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#flor {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Forma rellena del pétalo */
+.pf {
+  transition: fill 1.2s ease, filter 1.5s ease;
+  fill: url(#grad-off);
+}
+
+/* Borde del pétalo */
+.pb {
+  transition: stroke 1.2s ease, opacity 1s ease;
+}
+
+/* Nervios */
+.pn {
+  transition: stroke 1.2s ease, opacity 1s ease;
+}
+
+/* Transición de apertura de cada pétalo */
+#p1, #p2, #p3, #p4, #p5 {
+  transition: transform 2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 1s ease;
+}
+
+/* ——— ESTADOS DE PÉTALOS ——— */
+
+/* Encendido suave — persona A */
+.petalo-A .pf       { fill: url(#grad-a) !important; filter: drop-shadow(0 0 8px rgba(155,93,229,0.6)); }
+.petalo-A .pb       { stroke: rgba(155,93,229,0.7) !important; }
+.petalo-A .pn       { stroke: rgba(180,120,255,0.3) !important; }
+
+/* Encendido suave — persona B */
+.petalo-B .pf       { fill: url(#grad-b) !important; filter: drop-shadow(0 0 8px rgba(0,245,212,0.6)); }
+.petalo-B .pb       { stroke: rgba(0,245,212,0.7) !important; }
+.petalo-B .pn       { stroke: rgba(0,245,212,0.3) !important; }
+
+/* Titilar */
+.titilar .pf {
+  animation: titilar 1s ease-in-out infinite;
+}
+
+@keyframes titilar {
+  0%, 100% { opacity: 0.5; filter: drop-shadow(0 0 4px rgba(155,93,229,0.3)); }
+  50%       { opacity: 1;   filter: drop-shadow(0 0 22px rgba(220,180,255,0.9)) drop-shadow(0 0 45px rgba(155,93,229,0.6)); }
+}
+
+.titilar-b .pf {
+  animation: titilar-b 1s ease-in-out infinite;
+}
+
+@keyframes titilar-b {
+  0%, 100% { opacity: 0.5; filter: drop-shadow(0 0 4px rgba(0,245,212,0.3)); }
+  50%       { opacity: 1;   filter: drop-shadow(0 0 22px rgba(180,255,245,0.9)) drop-shadow(0 0 45px rgba(0,245,212,0.6)); }
+}
+
+/* Conexión total */
+.conexion .pf {
+  fill: url(#grad-conexion) !important;
+  filter: drop-shadow(0 0 18px rgba(248,198,255,0.8)) !important;
+  animation: pulso-conexion 2s ease-in-out infinite !important;
+}
+
+@keyframes pulso-conexion {
+  0%, 100% { filter: drop-shadow(0 0 14px rgba(248,198,255,0.7)) drop-shadow(0 0 30px rgba(155,93,229,0.5)); }
+  50%       { filter: drop-shadow(0 0 28px rgba(255,240,255,1))   drop-shadow(0 0 60px rgba(155,93,229,0.9)); }
+}
+
+/* Apertura de pétalos */
+#p1.abierto { transform: rotate(-105deg) !important; }
+#p2.abierto { transform: rotate(-58deg)  !important; }
+#p3.abierto { transform: rotate(0deg) translateY(-25px) !important; }
+#p4.abierto { transform: rotate(58deg)   !important; }
+#p5.abierto { transform: rotate(105deg)  !important; }
+
+/* ——— SENSOR TÁCTIL ——— */
+
+#sensor-tacto {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+#sensor-tacto.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+#sensor-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(155,93,229,0.5);
+  animation: ring-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes ring-pulse {
+  0%, 100% { transform: scale(1);    opacity: 0.6; }
+  50%       { transform: scale(1.35); opacity: 0; }
+}
+
+#sensor-icon {
+  font-size: 20px;
+  color: var(--violeta);
+  text-shadow: 0 0 12px var(--violeta);
+  animation: icon-glow 1.5s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes icon-glow {
+  0%, 100% { text-shadow: 0 0 8px rgba(155,93,229,0.6); }
+  50%       { text-shadow: 0 0 22px rgba(220,180,255,1), 0 0 40px rgba(155,93,229,0.7); }
+}
+
+/* ——— ESTADO ——— */
+
+#estado {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+#estado-linea {
+  width: 40px;
+  height: 1px;
+  background: rgba(155,93,229,0.3);
+  margin: 0 auto 10px;
+  transition: width 0.8s ease, background 0.8s ease;
+}
+
+#estado-texto {
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(200, 160, 255, 0.45);
+  font-style: italic;
+  transition: color 0.8s ease, text-shadow 0.8s ease;
+}
+
+#estado.activo #estado-linea {
+  width: 80px;
+  background: rgba(155,93,229,0.7);
+}
+
+#estado.activo #estado-texto {
+  color: rgba(220, 180, 255, 0.8);
+  text-shadow: 0 0 20px rgba(155,93,229,0.5);
+}
+
+#estado.conexion-total #estado-texto {
+  color: #ffffff;
+  text-shadow: 0 0 30px rgba(248,198,255,0.9), 0 0 60px rgba(155,93,229,0.7);
+  letter-spacing: 0.5em;
+  font-size: 14px;
+}
+
+/* ——— PARTÍCULAS ——— */
+
+#particulas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.particula {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: flotar var(--dur, 3s) ease-out forwards;
+}
+
+@keyframes flotar {
+  0%   { transform: translate(0,0) scale(1); opacity: 0.9; }
+  100% { transform: translate(var(--tx,0), var(--ty,-120px)) scale(0); opacity: 0; }
+}
+
+/* ——— CENTRO GLOW ——— */
+#centro-glow {
+  transition: opacity 1s, r 1s;
+}
+
+/* ——— FONDO EXPLOSION FINAL ——— */
+#fondo-explosion {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(155,93,229,0.25) 0%, transparent 70%);
+  transition: opacity 2s ease;
+  z-index: -1;
+}
+
+#fondo-explosion.activo { opacity: 1; }
