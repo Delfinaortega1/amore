@@ -135,7 +135,10 @@ const VIDEOS = [
   'o36hQ2-l93o',
   'qJy_uELu00s'
 ];
-
+function entrarFullscreen() {
+  document.documentElement.requestFullscreen().catch(() => {});
+  document.getElementById('btn-fullscreen').style.display = 'none';
+}
 function abrirProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
   const frame   = document.getElementById('proyeccion-frame');
