@@ -6,7 +6,8 @@
 const MODO_PROYECTOR = window.location.search.includes('proyector');
 
 if (MODO_PROYECTOR) {
-  // Pantalla negra — ocultar todo menos el overlay de video
+  document.body.style.background = '#000';
+
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('h1').style.display            = 'none';
     document.getElementById('huellaA').style.display      = 'none';
@@ -14,8 +15,36 @@ if (MODO_PROYECTOR) {
     document.getElementById('flor-wrapper').style.display = 'none';
     document.getElementById('sensor-tacto').style.display = 'none';
     document.getElementById('estado').style.display       = 'none';
+
+    const btnFS = document.createElement('div');
+    btnFS.style.cssText = `
+      position:fixed; inset:0; z-index:99999;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      background:#000; cursor:pointer;
+    `;
+    btnFS.innerHTML = `
+      <div style="
+        border:1px solid rgba(155,93,229,0.5);
+        border-radius:50%; width:80px; height:80px;
+        display:flex; align-items:center; justify-content:center;
+        margin-bottom:16px; box-shadow:0 0 30px rgba(155,93,229,0.3);
+      ">
+        <span style="font-size:28px;color:rgba(155,93,229,0.8);">✦</span>
+      </div>
+      <span style="
+        font-family:'Cormorant Garamond',serif;
+        font-size:11px; letter-spacing:0.5em;
+        text-transform:uppercase; color:rgba(200,160,255,0.4);
+        font-style:italic;
+      ">iniciar proyección</span>
+    `;
+    btnFS.addEventListener('click', () => {
+      document.documentElement.requestFullscreen().catch(() => {});
+      btnFS.remove();
+    });
+    document.body.appendChild(btnFS);
   });
-  document.body.style.background = '#000';
 }
 
 // ——— FIREBASE ———
