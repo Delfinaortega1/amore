@@ -160,13 +160,14 @@ if (!MODO_PROYECTOR) {
 
 const VIDEOS = [
   'aurora1.mp4',
-  'aurora1.MOV'
+  'aurora1.mp4'
 ];
 function abrirProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
   const video   = document.getElementById('proyeccion-frame');
   const idx     = Math.floor(Math.random() * VIDEOS.length);
-video.src = VIDEOS[idx] + '?t=' + Date.now();  video.load();
+  video.src     = VIDEOS[idx];
+  video.load();
   video.play().catch(() => {});
   overlay.classList.add('visible');
 
