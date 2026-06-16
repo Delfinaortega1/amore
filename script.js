@@ -158,9 +158,9 @@ if (!MODO_PROYECTOR) {
   });
 }
 
-// ——— PROYECCIÓN ———
 const VIDEOS = [
-  'aurora1.mp4'
+  'aurora1.mp4',
+  'aurora1.MOV'
 ];
 function abrirProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
