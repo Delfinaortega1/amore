@@ -165,8 +165,9 @@ const VIDEOS = [
 function abrirProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
   const video   = document.getElementById('proyeccion-frame');
-  const idx     = Math.floor(Math.random() * VIDEOS.length);
-video.src = VIDEOS[idx] + '?t=' + Date.now();  video.load();
+const idx = (Math.floor(Math.random() * VIDEOS.length) + 
+  (ultimoVideo !== undefined ? 1 : 0)) % VIDEOS.length;
+ultimoVideo = idx;video.src = VIDEOS[idx] + '?t=' + Date.now();  video.load();
   video.play().catch(() => {});
   overlay.classList.add('visible');
 
