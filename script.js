@@ -139,17 +139,19 @@ const VIDEOS = ['aurora1.mp4'];
 
 function abrirProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
-  const video   = document.getElementById('proyeccion-frame');
+  const video = document.getElementById('proyeccion-video');
   video.src = 'aurora1.mp4';
   video.play();
   overlay.classList.add('visible');
 }
+
 function cerrarProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
-  const video   = document.getElementById('proyeccion-frame');
+  const video = document.getElementById('proyeccion-video');
   overlay.classList.remove('visible');
   setTimeout(() => { video.pause(); video.src = ''; }, 1500);
 }
+
 function setEstado(txt, clases) {
   if (MODO_PROYECTOR) return;
   estadoTxt.textContent = txt;

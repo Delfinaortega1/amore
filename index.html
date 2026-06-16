@@ -8,7 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
-/* ——— OVERLAY DE PROYECCIÓN ——— */
 #proyeccion-overlay {
   position: fixed;
   inset: 0;
@@ -22,25 +21,26 @@
   opacity: 1;
   pointer-events: all;
 }
-#proyeccion-overlay iframe {
+#proyeccion-video {
   position: absolute;
   top: 50%; left: 50%;
   width: 100vw;
-  height: 56.25vw;
-  min-height: 100vh;
-  min-width: 177.78vh;
+  height: 100vh;
   transform: translate(-50%, -50%);
-  border: none;
+  object-fit: cover;
 }
 </style>
 </head>
 <body>
 
 <h1>AMORE</h1>
+
 <div id="proyeccion-overlay">
-  <video id="proyeccion-frame" autoplay loop muted playsinline style="position:absolute;top:50%;left:50%;width:100vw;height:100vh;transform:translate(-50%,-50%);object-fit:cover;border:none;"></video>
+  <video id="proyeccion-video" autoplay loop playsinline></video>
 </div>
-<div id="huellaA"
+
+<div id="huellaA" class="huella" onclick="activarPersonaA()">
+  <div class="huella-inner">
     <svg viewBox="0 0 60 90" width="50" height="75" fill="none">
       <ellipse cx="30" cy="72" rx="22" ry="16" fill="currentColor" opacity="0.5"/>
       <ellipse cx="14" cy="52" rx="7" ry="11" fill="currentColor" opacity="0.4"/>
@@ -103,7 +103,6 @@
         <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
       </filter>
     </defs>
-
     <g id="p1" style="transform-origin:0px 0px; transform:rotate(-62deg)">
       <path class="pf" d="M0,0 C-28,-45,-52,-105,-36,-165 C-24,-200,-8,-215,0,-215 C8,-215,24,-200,36,-165 C52,-105,28,-45,0,0 Z" fill="url(#grad-off)"/>
       <path class="pn" d="M0,-5 C0,-80,0,-150,0,-210" stroke="rgba(160,80,255,0.12)" stroke-width="1.5" fill="none"/>
@@ -139,16 +138,12 @@
       <path class="pn" d="M0,-35 C18,-90,28,-140,20,-175" stroke="rgba(160,80,255,0.07)" stroke-width="1" fill="none"/>
       <path class="pb" d="M0,0 C-28,-45,-52,-105,-36,-165 C-24,-200,-8,-215,0,-215 C8,-215,24,-200,36,-165 C52,-105,28,-45,0,0 Z" fill="none" stroke="rgba(160,80,255,0.18)" stroke-width="0.8"/>
     </g>
-
     <circle cx="0" cy="0" r="24" fill="#120824"/>
     <circle cx="0" cy="0" r="18" fill="#1c0e38"/>
     <circle cx="0" cy="0" r="11" fill="#2e1255"/>
     <circle id="centro-glow" cx="0" cy="0" r="6" fill="#7b3fc4" opacity="0.3"/>
-
-    <path d="M-5,10 C-6,55,-9,110,-6,155 C-4,170,4,170,6,155 C9,110,6,55,5,10 Z"
-          fill="#130720" stroke="rgba(100,40,160,0.25)" stroke-width="0.8"/>
+    <path d="M-5,10 C-6,55,-9,110,-6,155 C-4,170,4,170,6,155 C9,110,6,55,5,10 Z" fill="#130720" stroke="rgba(100,40,160,0.25)" stroke-width="0.8"/>
   </svg>
-
   <div id="particulas"></div>
 </div>
 
@@ -162,5 +157,6 @@
   <p id="estado-texto">Sitúate sobre las huellas</p>
 </div>
 
-<script type="module" src="script.js"></script></body>
+<script type="module" src="script.js"></script>
+</body>
 </html>
