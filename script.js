@@ -131,27 +131,24 @@ if (!MODO_PROYECTOR) {
 
 // ——— PROYECCIÓN ———
 const VIDEOS = [
-  'kuHA0c3LM0Q',
-  'BeOUBDJMXzU',
-  'o36hQ2-l93o',
-  'qJy_uELu00s'
+  'aurora1.mp4'
 ];
 
 function abrirProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
   const video   = document.getElementById('proyeccion-frame');
   const idx     = Math.floor(Math.random() * VIDEOS.length);
-  // En modo proyector usamos YouTube embed, en modo flor igual
-  video.src = VIDEOS[idx];
-  overlay.classList.add('visible');
+  video.src     = VIDEOS[idx];
+  video.load();
   video.play().catch(() => {});
+  overlay.classList.add('visible');
 }
 
 function cerrarProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
   const video   = document.getElementById('proyeccion-frame');
   overlay.classList.remove('visible');
-  setTimeout(() => { video.src = ''; }, 1500);
+  setTimeout(() => { video.pause(); video.src = ''; }, 1500);
 }
 
 // ——— UTILIDADES ———
