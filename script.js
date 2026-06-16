@@ -159,7 +159,7 @@ if (!MODO_PROYECTOR) {
 }
 
 const VIDEOS = [
-  'aurora1.mov',
+  'aurora1.mp4',
   'aurora2.mov',
   'aurora3.mov',
   'aurora4.mov',
@@ -178,6 +178,8 @@ function abrirProyeccion() {
   video.load();
   video.play().catch(() => {});
   overlay.classList.add('visible');
+
+}
 
 function cerrarProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
