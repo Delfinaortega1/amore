@@ -6,16 +6,19 @@
 const MODO_PROYECTOR = window.location.search.includes('proyector');
 
 if (MODO_PROYECTOR) {
-  // Ocultar todo excepto el overlay de video
-  document.body.style.background = '#000';
-  document.querySelector('h1').style.display = 'none';
-  document.getElementById('huellaA').style.display = 'none';
-  document.getElementById('huellaB').style.display = 'none';
-  document.getElementById('flor-wrapper').style.display = 'none';
-  document.getElementById('sensor-tacto').style.display = 'none';
-  document.getElementById('estado').style.display = 'none';
+  const btnFS = document.createElement('div');
+  btnFS.style.cssText = `
+    position:fixed; inset:0; z-index:99999; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    background:#000;
+  `;
+  btnFS.innerHTML = '<span style="color:rgba(155,93,229,0.5);font-size:13px;letter-spacing:0.5em;font-family:Cormorant Garamond,serif;">✦</span>';
+  btnFS.addEventListener('click', () => {
+    document.documentElement.requestFullscreen().catch(() => {});
+    btnFS.remove();
+  });
+  document.body.appendChild(btnFS);
 }
-
 // ——— FIREBASE ———
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
