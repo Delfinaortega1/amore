@@ -61,7 +61,16 @@ const centroGlow = document.getElementById('centro-glow');
 const fondoExplosion = document.createElement('div');
 fondoExplosion.id = 'fondo-explosion';
 document.body.appendChild(fondoExplosion);
-
+if (MODO_PROYECTOR) {
+  // Botón invisible para fullscreen
+  const btnFS = document.createElement('div');
+  btnFS.style.cssText = 'position:fixed;top:0;left:0;width:60px;height:60px;z-index:99999;cursor:pointer;';
+  btnFS.addEventListener('click', () => {
+    document.documentElement.requestFullscreen().catch(() => {});
+    btnFS.remove();
+  });
+  document.body.appendChild(btnFS);
+}
 if (!MODO_PROYECTOR) {
   const btnSerial = document.createElement('button');
   btnSerial.textContent = '⚡ Conectar Arduino';
@@ -128,20 +137,11 @@ if (!MODO_PROYECTOR) {
   });
 }
 
-// ——— PROYECCIÓN ———
-const VIDEOS = [
-  'kuHA0c3LM0Q',
-  'BeOUBDJMXzU',
-  'o36hQ2-l93o',
-  'qJy_uELu00s'
-];
-
+const VIDEOS = ['aurora1.mp4'];
 function abrirProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
   const frame   = document.getElementById('proyeccion-frame');
-  const idx     = Math.floor(Math.random() * VIDEOS.length);
-  const id      = VIDEOS[idx];
-  frame.src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&controls=0&playlist=${id}&disablekb=1&modestbranding=1&rel=0&iv_load_policy=3`;
+  frame.src = VIDEOS[0];
   overlay.classList.add('visible');
   if (MODO_PROYECTOR) {
     document.documentElement.requestFullscreen().catch(() => {});
