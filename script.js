@@ -6,19 +6,26 @@
 const MODO_PROYECTOR = window.location.search.includes('proyector');
 
 if (MODO_PROYECTOR) {
+  document.body.style.background = '#000';
+  document.querySelector('h1').style.display = 'none';
+  document.getElementById('huellaA').style.display = 'none';
+  document.getElementById('huellaB').style.display = 'none';
+  document.getElementById('flor-wrapper').style.display = 'none';
+  document.getElementById('sensor-tacto').style.display = 'none';
+  document.getElementById('estado').style.display = 'none';
+
   const btnFS = document.createElement('div');
-  btnFS.style.cssText = `
-    position:fixed; inset:0; z-index:99999; cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
-    background:#000;
-  `;
+  btnFS.style.cssText = 'position:fixed;inset:0;z-index:99999;cursor:pointer;background:#000;display:flex;align-items:center;justify-content:center;';
   btnFS.innerHTML = '<span style="color:rgba(155,93,229,0.5);font-size:13px;letter-spacing:0.5em;font-family:Cormorant Garamond,serif;">✦</span>';
   btnFS.addEventListener('click', () => {
     document.documentElement.requestFullscreen().catch(() => {});
-    btnFS.remove();
+    btnFS.style.pointerEvents = 'none';
+    btnFS.style.background = '#000';
+    btnFS.innerHTML = '';
   });
   document.body.appendChild(btnFS);
 }
+
 // ——— FIREBASE ———
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -30,15 +37,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Si es proyector, escucha cambios
 if (MODO_PROYECTOR) {
   onValue(ref(db, 'estado/conexion'), (snapshot) => {
     const val = snapshot.val();
-    if (val === true) {
-      abrirProyeccion();
-    } else {
-      cerrarProyeccion();
-    }
+    if (val === true) abrirProyeccion();
+    else cerrarProyeccion();
   });
 }
 
@@ -64,16 +67,7 @@ const centroGlow = document.getElementById('centro-glow');
 const fondoExplosion = document.createElement('div');
 fondoExplosion.id = 'fondo-explosion';
 document.body.appendChild(fondoExplosion);
-if (MODO_PROYECTOR) {
-  // Botón invisible para fullscreen
-  const btnFS = document.createElement('div');
-  btnFS.style.cssText = 'position:fixed;top:0;left:0;width:60px;height:60px;z-index:99999;cursor:pointer;';
-  btnFS.addEventListener('click', () => {
-    document.documentElement.requestFullscreen().catch(() => {});
-    btnFS.remove();
-  });
-  document.body.appendChild(btnFS);
-}
+
 if (!MODO_PROYECTOR) {
   const btnSerial = document.createElement('button');
   btnSerial.textContent = '⚡ Conectar Arduino';
@@ -140,15 +134,14 @@ if (!MODO_PROYECTOR) {
   });
 }
 
+// ——— PROYECCIÓN ———
 const VIDEOS = ['aurora1.mp4'];
+
 function abrirProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
   const frame   = document.getElementById('proyeccion-frame');
   frame.src = VIDEOS[0];
   overlay.classList.add('visible');
-  if (MODO_PROYECTOR) {
-    document.documentElement.requestFullscreen().catch(() => {});
-  }
 }
 
 function cerrarProyeccion() {
@@ -158,7 +151,6 @@ function cerrarProyeccion() {
   setTimeout(() => { frame.src = ''; }, 1500);
 }
 
-// ——— UTILIDADES ———
 function setEstado(txt, clases) {
   if (MODO_PROYECTOR) return;
   estadoTxt.textContent = txt;
@@ -169,7 +161,6 @@ function limpiarClasesPetalo(petalo) {
   petalo.classList.remove('petalo-A','petalo-B','titilar','titilar-b','conexion','abierto');
 }
 
-// ——— REPOSO ———
 function irAReposo() {
   if (temporizadorFinal) { clearTimeout(temporizadorFinal); temporizadorFinal = null; }
   cerrarProyeccion();
@@ -178,8 +169,7 @@ function irAReposo() {
   setTimeout(() => {
     [p1,p2,p3,p4,p5].forEach(p => limpiarClasesPetalo(p));
     personaA = false; personaB = false; conexionHecha = false;
-    huellaA.classList.remove('activa');
-    huellaB.classList.remove('activa');
+    huellaA.classList.remove('activa'); huellaB.classList.remove('activa');
     sensor.classList.remove('visible');
     centroGlow.setAttribute('opacity', '0.3');
     centroGlow.setAttribute('r', '6');
@@ -285,8 +275,6 @@ function activarConexion() {
   if (conexionHecha || !personaA || !personaB) return;
   conexionHecha = true;
   sensor.classList.remove('visible');
-
-  // Avisar al proyector via Firebase
   set(ref(db, 'estado/conexion'), true);
 
   [p1,p2,p3,p4,p5].forEach(p => { limpiarClasesPetalo(p); p.classList.add('conexion'); });
