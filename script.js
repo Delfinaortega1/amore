@@ -36,7 +36,7 @@ if (MODO_PROYECTOR) {
     } else {
       cerrarProyeccion();
     }
-  }, { onlyOnce: false });
+  });
 }
 
 // ——— ESTADO GLOBAL ———
@@ -135,10 +135,7 @@ const VIDEOS = [
   'o36hQ2-l93o',
   'qJy_uELu00s'
 ];
-function entrarFullscreen() {
-  document.documentElement.requestFullscreen().catch(() => {});
-  document.getElementById('btn-fullscreen').style.display = 'none';
-}
+
 function abrirProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
   const frame   = document.getElementById('proyeccion-frame');
@@ -146,11 +143,6 @@ function abrirProyeccion() {
   const id      = VIDEOS[idx];
   frame.src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&controls=0&playlist=${id}&disablekb=1&modestbranding=1&rel=0&iv_load_policy=3`;
   overlay.classList.add('visible');
-  
-  // Entrar en pantalla completa automáticamente
-  if (MODO_PROYECTOR) {
-    document.documentElement.requestFullscreen().catch(() => {});
-  }
 }
 
 function cerrarProyeccion() {
