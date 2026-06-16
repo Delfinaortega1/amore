@@ -159,7 +159,7 @@ if (!MODO_PROYECTOR) {
 }
 
 const VIDEOS = [
-  'aurora1.mp4',
+  'aurora1.mov',
   'aurora2.mov',
   'aurora3.mov',
   'aurora4.mov',
