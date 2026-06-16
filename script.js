@@ -160,7 +160,7 @@ if (!MODO_PROYECTOR) {
 
 const VIDEOS = [
   'aurora1.mp4',
-  'amore2.mp4'
+  'aurora2.mp4'
 ];
 function abrirProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
