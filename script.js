@@ -36,7 +36,7 @@ if (MODO_PROYECTOR) {
     } else {
       cerrarProyeccion();
     }
-  });
+  }, { onlyOnce: false });
 }
 
 // ——— ESTADO GLOBAL ———
