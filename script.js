@@ -162,11 +162,13 @@ const VIDEOS = [
   'aurora1.mp4',
   'aurora2.mp4'
 ];
+let ultimoVideo = -1;
 function abrirProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
   const video   = document.getElementById('proyeccion-frame');
-  const idx     = Math.floor(Math.random() * VIDEOS.length);
-  video.src     = VIDEOS[idx];
+let idx;
+do { idx = Math.floor(Math.random() * VIDEOS.length); } while (idx === ultimoVideo);
+ultimoVideo = idx;  video.src     = VIDEOS[idx];
   video.load();
   video.play().catch(() => {});
   overlay.classList.add('visible');
