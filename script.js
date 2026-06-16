@@ -165,8 +165,12 @@ const VIDEOS = [
 function abrirProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
   const video   = document.getElementById('proyeccion-frame');
-  const idx = Math.floor(Math.random() * VIDEOS.length);
+  const idx     = Math.floor(Math.random() * VIDEOS.length);
+  video.src     = VIDEOS[idx];
+  video.load();
+  video.play().catch(() => {});
   overlay.classList.add('visible');
+
 
   // Sonido de conexión áurica
   try {
