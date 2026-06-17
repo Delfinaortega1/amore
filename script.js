@@ -60,13 +60,12 @@ const db  = getDatabase(app);
 
 
 // El proyector escucha Firebase y muestra/oculta el video
-if (MODO_PROYECTOR) {
-  onValue(ref(db, 'estado/conexion'), (snapshot) => {
-    if (snapshot.val() === true) abrirProyeccion();
-    else                          cerrarProyeccion();
+if (!MODO_PROYECTOR) {
+  onValue(ref(db, 'sensores/A'), (snapshot) => {
+    if (snapshot.val() === true) activarPersonaA();
+    else desactivarPersonaA();
   });
 }
-
 // ——— ESTADO GLOBAL ———
 let personaA = false;
 let personaB = false;
