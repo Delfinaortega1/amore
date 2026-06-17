@@ -58,6 +58,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getDatabase(app);
 
+
 // El proyector escucha Firebase y muestra/oculta el video
 if (MODO_PROYECTOR) {
   onValue(ref(db, 'estado/conexion'), (snapshot) => {
