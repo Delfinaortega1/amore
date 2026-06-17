@@ -137,16 +137,33 @@ if (!MODO_PROYECTOR) {
     } catch(e) {}
   }
 
-  function procesarMensaje(msg) {
-    if (!msg) return;
-    switch(msg) {
-      case 'PERSONA_A_ON':  activarPersonaA();    break;
-      case 'PERSONA_A_OFF': desactivarPersonaA(); break;
-      case 'PERSONA_B_ON':  activarPersonaB();    break;
-      case 'PERSONA_B_OFF': desactivarPersonaB(); break;
-      case 'TOQUE':         activarConexion();    break;
-    }
+ function procesarMensaje(msg) {
+  console.log("Arduino:", msg);
+
+  if (!msg) return;
+
+  switch(msg) {
+    case 'PERSONA_A_ON':
+      activarPersonaA();
+      break;
+
+    case 'PERSONA_A_OFF':
+      desactivarPersonaA();
+      break;
+
+    case 'PERSONA_B_ON':
+      activarPersonaB();
+      break;
+
+    case 'PERSONA_B_OFF':
+      desactivarPersonaB();
+      break;
+
+    case 'TOQUE':
+      activarConexion();
+      break;
   }
+}
 
   // Teclado como respaldo
   document.addEventListener('keydown', (e) => {
