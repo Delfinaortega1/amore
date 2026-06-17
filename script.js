@@ -104,6 +104,8 @@ if (!MODO_PROYECTOR) {
 
   let puerto = null;
   let bufferSerial = '';
+  puerto = await navigator.serial.requestPort();
+await puerto.open({ baudRate: 9600 });
 
   btnSerial.addEventListener('click', async () => {
     try {
