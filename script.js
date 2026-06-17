@@ -178,43 +178,7 @@ function abrirProyeccion() {
   overlay.classList.add('visible');
 
 
-  // Sonido de conexión áurica
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-
-    // Capas de frecuencias áuricas (432hz base)
-    const frecuencias = [432, 528, 639, 741];
-
-    frecuencias.forEach((freq, i) => {
-      setTimeout(() => {
-        const osc  = ctx.createOscillator();
-        const gain = ctx.createGain();
-        const pan  = ctx.createStereoPanner();
-
-        osc.connect(gain);
-        gain.connect(pan);
-        pan.connect(ctx.destination);
-
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        // Sube suavemente de frecuencia — efecto expansivo
-        osc.frequency.linearRampToValueAtTime(freq * 1.01, ctx.currentTime + 6);
-
-        // Panorama que se mueve de izq a der
-        pan.pan.setValueAtTime(-1, ctx.currentTime);
-        pan.pan.linearRampToValueAtTime(1, ctx.currentTime + 5);
-
-        // Volumen: fade in largo y suave
-        gain.gain.setValueAtTime(0, ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 2);
-        gain.gain.linearRampToValueAtTime(0.04, ctx.currentTime + 5);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 8);
-
-        osc.start(ctx.currentTime);
-        osc.stop(ctx.currentTime + 8.5);
-      }, i * 400); // entran escalonadas
-    });
-  } catch(e) {}
+  
 }
 
 function cerrarProyeccion() {
