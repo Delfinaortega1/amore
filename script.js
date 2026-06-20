@@ -385,7 +385,7 @@ function activarConexion() {
       centroGlow.setAttribute('fill','#7b3fc4');
       fondoExplosion.classList.remove('activo');
       setEstado('Sitúate sobre las huellas','');
-    }, 2000);
+    }, 1700);
   }, 20000);
 }
 
