@@ -193,14 +193,14 @@ await puerto.open({ baudRate: 9600 });
 }
 
 const VIDEOS = [
-  'aurora1.mp4',
-  'aurora2.mp4',
-  'aurora3.mp4',
-  'aurora4.mp4',
-  'aurora5.mp4',
-  'aurora6.mp4',
-  'aurora7.mp4',
-  'aurora8.mp4'
+  'Aurora1.mp4',
+  'Aurora2.mp4',
+  'Aurora3.mp4',
+  'Aurora4.mp4',
+  'Aurora5.mp4',
+  'Aurora6.mp4',
+  'Aurora7.mp4',
+  'Aurora8.mp4'
 ];
 function abrirProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
