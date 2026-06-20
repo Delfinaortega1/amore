@@ -58,7 +58,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getDatabase(app);
 
-
 // La compu escucha Firebase para A, B y conexión
 if (!MODO_PROYECTOR) {
   onValue(ref(db, 'sensores/A'), (snapshot) => {
@@ -81,6 +80,7 @@ if (MODO_PROYECTOR) {
     else cerrarProyeccion();
   });
 }
+
 // ——— ESTADO GLOBAL ———
 let personaA = false;
 let personaB = false;
@@ -99,6 +99,12 @@ const sensor     = document.getElementById('sensor-tacto');
 const estadoEl   = document.getElementById('estado');
 const estadoTxt  = document.getElementById('estado-texto');
 const centroGlow = document.getElementById('centro-glow');
+
+// ——— SONIDOS MP3 ———
+function reproducirSonido(numero) {
+  const audio = new Audio(`sonido-${numero}.mp3`);
+  audio.play().catch(() => {});
+}
 
 const fondoExplosion = document.createElement('div');
 fondoExplosion.id = 'fondo-explosion';
@@ -119,8 +125,6 @@ if (!MODO_PROYECTOR) {
 
   let puerto = null;
   let bufferSerial = '';
-  puerto = await navigator.serial.requestPort();
-await puerto.open({ baudRate: 9600 });
 
   btnSerial.addEventListener('click', async () => {
     try {
@@ -153,33 +157,17 @@ await puerto.open({ baudRate: 9600 });
     } catch(e) {}
   }
 
- function procesarMensaje(msg) {
-  console.log("Arduino:", msg);
-
-  if (!msg) return;
-
-  switch(msg) {
-    case 'PERSONA_A_ON':
-      activarPersonaA();
-      break;
-
-    case 'PERSONA_A_OFF':
-      desactivarPersonaA();
-      break;
-
-    case 'PERSONA_B_ON':
-      activarPersonaB();
-      break;
-
-    case 'PERSONA_B_OFF':
-      desactivarPersonaB();
-      break;
-
-    case 'TOQUE':
-      activarConexion();
-      break;
+  function procesarMensaje(msg) {
+    console.log("Arduino:", msg);
+    if (!msg) return;
+    switch(msg) {
+      case 'PERSONA_A_ON':  activarPersonaA();    break;
+      case 'PERSONA_A_OFF': desactivarPersonaA(); break;
+      case 'PERSONA_B_ON':  activarPersonaB();    break;
+      case 'PERSONA_B_OFF': desactivarPersonaB(); break;
+      case 'TOQUE':         activarConexion();    break;
+    }
   }
-}
 
   // Teclado como respaldo
   document.addEventListener('keydown', (e) => {
@@ -192,6 +180,7 @@ await puerto.open({ baudRate: 9600 });
   });
 }
 
+// ——— PROYECCIÓN ———
 const VIDEOS = [
   'Aurora1.mp4',
   'Aurora2.mp4',
@@ -202,6 +191,7 @@ const VIDEOS = [
   'Aurora7.mp4',
   'Aurora8.mp4'
 ];
+
 function abrirProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
   const video   = document.getElementById('proyeccion-frame');
@@ -210,9 +200,6 @@ function abrirProyeccion() {
   video.load();
   video.play().catch(() => {});
   overlay.classList.add('visible');
-
-
-  
 }
 
 function cerrarProyeccion() {
@@ -271,11 +258,13 @@ function irAEstado2(quienQueda) {
       p1.classList.add('petalo-A'); p2.classList.add('petalo-A');
       p5.classList.add('titilar');
       setEstado('Falta una segunda persona','activo');
+      reproducirSonido(2);
     } else {
       personaA = false; huellaA.classList.remove('activa');
       p4.classList.add('petalo-B'); p5.classList.add('petalo-B');
       p3.classList.add('titilar-b');
       setEstado('Falta una primera persona','activo');
+      reproducirSonido(2);
     }
   }, 2000);
 }
@@ -284,32 +273,34 @@ function irAEstado2(quienQueda) {
 function activarPersonaA() {
   if (personaA || conexionHecha) return;
   personaA = true;
+  reproducirSonido(1);
   huellaA.classList.add('activa');
   limpiarClasesPetalo(p1); limpiarClasesPetalo(p2);
   p1.classList.add('petalo-A'); p2.classList.add('petalo-A');
   limpiarClasesPetalo(p5); p5.classList.add('titilar');
   centroGlow.setAttribute('opacity','0.5'); centroGlow.setAttribute('r','8');
   if (personaB) pasarAEsperandoToque();
-  else setEstado('Falta una segunda persona','activo');
+  else { setEstado('Falta una segunda persona','activo'); reproducirSonido(2); }
 }
 
 // ——— PERSONA B ———
 function activarPersonaB() {
   if (personaB || conexionHecha) return;
   personaB = true;
+  reproducirSonido(3);
   huellaB.classList.add('activa');
   limpiarClasesPetalo(p4); limpiarClasesPetalo(p5);
   p4.classList.add('petalo-B'); p5.classList.add('petalo-B');
   limpiarClasesPetalo(p3); p3.classList.add('titilar-b');
   centroGlow.setAttribute('opacity','0.6'); centroGlow.setAttribute('r','10');
   if (personaA) pasarAEsperandoToque();
-  else setEstado('Falta una primera persona','activo');
+  else { setEstado('Falta una primera persona','activo'); reproducirSonido(2); }
 }
 
 // ——— DESACTIVAR ———
 function desactivarPersonaA() {
   if (!personaA) return;
-  if (conexionHecha) { reproducirSonidoDesconexion(); irAEstado2('B'); }
+  if (conexionHecha) { reproducirSonidoDesconexion(); reproducirSonido(7); irAEstado2('B'); }
   else {
     personaA = false; huellaA.classList.remove('activa');
     sensor.classList.remove('visible');
@@ -325,7 +316,7 @@ function desactivarPersonaA() {
 
 function desactivarPersonaB() {
   if (!personaB) return;
-  if (conexionHecha) { reproducirSonidoDesconexion(); irAEstado2('A'); }
+  if (conexionHecha) { reproducirSonidoDesconexion(); reproducirSonido(7); irAEstado2('A'); }
   else {
     personaB = false; huellaB.classList.remove('activa');
     sensor.classList.remove('visible');
@@ -339,8 +330,9 @@ function desactivarPersonaB() {
   }
 }
 
-// ——— ESTADO 3A ———
+// ——— ESTADO 3A: AMBAS PRESENTES ———
 function pasarAEsperandoToque() {
+  reproducirSonido(4);
   limpiarClasesPetalo(p3); p3.classList.add('titilar');
   sensor.classList.add('visible');
   setEstado('Toquen la planta','activo');
@@ -351,6 +343,7 @@ function pasarAEsperandoToque() {
 function activarConexion() {
   if (conexionHecha || !personaA || !personaB) return;
   conexionHecha = true;
+  reproducirSonido(5);
   sensor.classList.remove('visible');
 
   // Avisar al proyector via Firebase
@@ -368,11 +361,12 @@ function activarConexion() {
   setTimeout(() => lanzarParticulas(), 1200);
   setTimeout(() => lanzarParticulas(), 1900);
   setTimeout(() => reproducirSonidoConexion(), 500);
-  setTimeout(() => setEstado('CONEXIÓN COMPLETA','conexion-total'), 800);
+  setTimeout(() => { setEstado('CONEXIÓN COMPLETA','conexion-total'); reproducirSonido(6); }, 800);
 
-  // ——— ESTADO 4: FINAL ———
+  // ——— ESTADO 4: FINAL (17 segundos) ———
   temporizadorFinal = setTimeout(() => {
     reproducirSonidoDesconexion();
+    reproducirSonido(7);
     set(ref(db, 'estado/conexion'), false);
     cerrarProyeccion();
     [p1,p2,p3,p4,p5].forEach(p => p.classList.remove('abierto'));
@@ -385,8 +379,8 @@ function activarConexion() {
       centroGlow.setAttribute('fill','#7b3fc4');
       fondoExplosion.classList.remove('activo');
       setEstado('Sitúate sobre las huellas','');
-    }, 17000);
-  }, 20000);
+    }, 2000);
+  }, 17000);
 }
 
 // ——— PARTÍCULAS ———
@@ -408,7 +402,7 @@ function lanzarParticulas() {
   }
 }
 
-// ——— SONIDO CONEXIÓN ———
+// ——— SONIDO CONEXIÓN (efecto original, queda como capa extra) ———
 function reproducirSonidoConexion() {
   try {
     const ctx = new (window.AudioContext||window.webkitAudioContext)();
@@ -428,7 +422,7 @@ function reproducirSonidoConexion() {
   } catch(e) {}
 }
 
-// ——— SONIDO DESCONEXIÓN ———
+// ——— SONIDO DESCONEXIÓN (efecto original, queda como capa extra) ———
 function reproducirSonidoDesconexion() {
   try {
     const ctx = new (window.AudioContext||window.webkitAudioContext)();
