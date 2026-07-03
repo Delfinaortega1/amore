@@ -58,29 +58,33 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getDatabase(app);
 
-
-// La compu escucha Firebase para A, B y conexión
+// ——— ESCUCHA FIREBASE (modo flor) ———
 if (!MODO_PROYECTOR) {
-  onValue(ref(db, 'sensores/A'), (snapshot) => {
-    if (snapshot.val() === true) activarPersonaA();
-    else desactivarPersonaA();
+  onValue(ref(db, 'sensores/mano_A'), (s) => {
+    if (s.val() === true) activarPersonaA();
   });
-  onValue(ref(db, 'sensores/B'), (snapshot) => {
-    if (snapshot.val() === true) activarPersonaB();
-    else desactivarPersonaB();
+  onValue(ref(db, 'sensores/pie_A'), (s) => {
+    if (s.val() === true) activarPersonaA();
   });
-  onValue(ref(db, 'estado/conexion'), (snapshot) => {
-    if (snapshot.val() === true) activarConexion();
+  onValue(ref(db, 'sensores/mano_B'), (s) => {
+    if (s.val() === true) activarPersonaB();
+  });
+  onValue(ref(db, 'sensores/pie_B'), (s) => {
+    if (s.val() === true) activarPersonaB();
+  });
+  onValue(ref(db, 'estado/conexion'), (s) => {
+    if (s.val() === true) activarConexion();
   });
 }
 
-// El proyector también escucha el video
+// ——— ESCUCHA FIREBASE (modo proyector) ———
 if (MODO_PROYECTOR) {
   onValue(ref(db, 'estado/conexion'), (snapshot) => {
     if (snapshot.val() === true) abrirProyeccion();
     else cerrarProyeccion();
   });
 }
+
 // ——— ESTADO GLOBAL ———
 let personaA = false;
 let personaB = false;
@@ -119,8 +123,6 @@ if (!MODO_PROYECTOR) {
 
   let puerto = null;
   let bufferSerial = '';
-  puerto = await navigator.serial.requestPort();
-await puerto.open({ baudRate: 9600 });
 
   btnSerial.addEventListener('click', async () => {
     try {
@@ -153,56 +155,77 @@ await puerto.open({ baudRate: 9600 });
     } catch(e) {}
   }
 
- function procesarMensaje(msg) {
-  console.log("Arduino:", msg);
-
-  if (!msg) return;
-
-  switch(msg) {
-    case 'PERSONA_A_ON':
-      activarPersonaA();
-      break;
-
-    case 'PERSONA_A_OFF':
-      desactivarPersonaA();
-      break;
-
-    case 'PERSONA_B_ON':
-      activarPersonaB();
-      break;
-
-    case 'PERSONA_B_OFF':
-      desactivarPersonaB();
-      break;
-
-    case 'TOQUE':
-      activarConexion();
-      break;
+  function procesarMensaje(msg) {
+    console.log("Arduino:", msg);
+    if (!msg) return;
+    switch(msg) {
+      case 'PERSONA_A_ON':  activarPersonaA();   break;
+      case 'PERSONA_A_OFF': desactivarPersonaA(); break;
+      case 'PERSONA_B_ON':  activarPersonaB();   break;
+      case 'PERSONA_B_OFF': desactivarPersonaB(); break;
+      case 'TOQUE':         activarConexion();   break;
+    }
   }
-}
 
-  // Teclado como respaldo
+  // ——— TECLADO INALÁMBRICO ———
+  // A = llega persona A | B = llega persona B
+  // Q = se va persona A | W = se va persona B
+  // Espacio / Enter = conexión completa
+  // R = reset total
   document.addEventListener('keydown', (e) => {
     const k = e.key.toLowerCase();
-    if (k === 'a') activarPersonaA();
-    if (k === 'b') activarPersonaB();
-    if (k === 'q') desactivarPersonaA();
-    if (k === 'w') desactivarPersonaB();
-    if (k === ' ' || k === 'enter') { e.preventDefault(); activarConexion(); }
-    if (k === 'r') irAReposo();
+
+    if (k === 'a') {
+      set(ref(db, 'sensores/mano_A'), true);
+      set(ref(db, 'sensores/pie_A'),  true);
+      activarPersonaA();
+    }
+
+    if (k === 'b') {
+      set(ref(db, 'sensores/mano_B'), true);
+      set(ref(db, 'sensores/pie_B'),  true);
+      activarPersonaB();
+    }
+
+    if (k === ' ' || k === 'enter') {
+      e.preventDefault();
+      set(ref(db, 'sensores/mano_A'), true);
+      set(ref(db, 'sensores/pie_A'),  true);
+      set(ref(db, 'sensores/mano_B'), true);
+      set(ref(db, 'sensores/pie_B'),  true);
+      set(ref(db, 'estado/conexion'), true);
+      activarConexion();
+    }
+
+    if (k === 'q') {
+      set(ref(db, 'sensores/mano_A'), false);
+      set(ref(db, 'sensores/pie_A'),  false);
+      desactivarPersonaA();
+    }
+
+    if (k === 'w') {
+      set(ref(db, 'sensores/mano_B'), false);
+      set(ref(db, 'sensores/pie_B'),  false);
+      desactivarPersonaB();
+    }
+
+    if (k === 'r') {
+      set(ref(db, 'sensores/mano_A'), false);
+      set(ref(db, 'sensores/pie_A'),  false);
+      set(ref(db, 'sensores/mano_B'), false);
+      set(ref(db, 'sensores/pie_B'),  false);
+      set(ref(db, 'estado/conexion'), false);
+      irAReposo();
+    }
   });
 }
 
+// ——— VIDEOS PROYECCIÓN ———
 const VIDEOS = [
-  'Aurora1.mp4',
-  'Aurora2.mp4',
-  'Aurora3.mp4',
-  'Aurora4.mp4',
-  'Aurora5.mp4',
-  'Aurora6.mp4',
-  'Aurora7.mp4',
-  'Aurora8.mp4'
+  'Aurora1.mp4','Aurora2.mp4','Aurora3.mp4','Aurora4.mp4',
+  'Aurora5.mp4','Aurora6.mp4','Aurora7.mp4','Aurora8.mp4'
 ];
+
 function abrirProyeccion() {
   const overlay = document.getElementById('proyeccion-overlay');
   const video   = document.getElementById('proyeccion-frame');
@@ -304,7 +327,7 @@ function activarPersonaB() {
   else setEstado('Falta una primera persona','activo');
 }
 
-// ——— DESACTIVAR ———
+// ——— DESACTIVAR A ———
 function desactivarPersonaA() {
   if (!personaA) return;
   if (conexionHecha) { reproducirSonidoDesconexion(); irAEstado2('B'); }
@@ -321,6 +344,7 @@ function desactivarPersonaA() {
   }
 }
 
+// ——— DESACTIVAR B ———
 function desactivarPersonaB() {
   if (!personaB) return;
   if (conexionHecha) { reproducirSonidoDesconexion(); irAEstado2('A'); }
@@ -337,7 +361,7 @@ function desactivarPersonaB() {
   }
 }
 
-// ——— ESTADO 3A ———
+// ——— ESTADO 3A: ESPERANDO TOQUE ———
 function pasarAEsperandoToque() {
   limpiarClasesPetalo(p3); p3.classList.add('titilar');
   sensor.classList.add('visible');
@@ -367,6 +391,7 @@ function activarConexion() {
   setTimeout(() => reproducirSonidoConexion(), 500);
   setTimeout(() => setEstado('CONEXIÓN COMPLETA','conexion-total'), 800);
 
+  // ——— ESTADO 4: FINAL ———
   temporizadorFinal = setTimeout(() => {
     reproducirSonidoDesconexion();
     set(ref(db, 'estado/conexion'), false);
