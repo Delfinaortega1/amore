@@ -189,6 +189,7 @@ await puerto.open({ baudRate: 9600 });
     if (k === 'q') desactivarPersonaA();
     if (k === 'w') desactivarPersonaB();
     if (k === ' ' || k === 'enter') { e.preventDefault(); activarConexion(); }
+    if (k === 'r') irAReposo();
   });
 }
 
@@ -210,9 +211,6 @@ function abrirProyeccion() {
   video.load();
   video.play().catch(() => {});
   overlay.classList.add('visible');
-
-
-  
 }
 
 function cerrarProyeccion() {
@@ -353,7 +351,6 @@ function activarConexion() {
   conexionHecha = true;
   sensor.classList.remove('visible');
 
-  // Avisar al proyector via Firebase
   set(ref(db, 'estado/conexion'), true);
 
   [p1,p2,p3,p4,p5].forEach(p => { limpiarClasesPetalo(p); p.classList.add('conexion'); });
@@ -370,7 +367,6 @@ function activarConexion() {
   setTimeout(() => reproducirSonidoConexion(), 500);
   setTimeout(() => setEstado('CONEXIÓN COMPLETA','conexion-total'), 800);
 
-  // ——— ESTADO 4: FINAL ———
   temporizadorFinal = setTimeout(() => {
     reproducirSonidoDesconexion();
     set(ref(db, 'estado/conexion'), false);
