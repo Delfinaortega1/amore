@@ -416,7 +416,7 @@ function activarConexion() {
       fondoExplosion.classList.remove('activo');
       setEstado('Sitúate sobre las huellas','');
     }, 17000);
-  }, 20000);
+  }, 15000);
 }
 
 // ——— PARTÍCULAS ———
