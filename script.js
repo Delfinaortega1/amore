@@ -58,6 +58,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getDatabase(app);
 
+// ——— RESET AL INICIAR ———
+if (!MODO_PROYECTOR) {
+  set(ref(db, 'sensores/mano_A'), false);
+  set(ref(db, 'sensores/pie_A'),  false);
+  set(ref(db, 'sensores/mano_B'), false);
+  set(ref(db, 'sensores/pie_B'),  false);
+  set(ref(db, 'estado/conexion'), false);
+}
+
 // ——— ESCUCHA FIREBASE (modo flor) ———
 if (!MODO_PROYECTOR) {
   onValue(ref(db, 'sensores/mano_A'), (s) => {
@@ -159,11 +168,11 @@ if (!MODO_PROYECTOR) {
     console.log("Arduino:", msg);
     if (!msg) return;
     switch(msg) {
-      case 'PERSONA_A_ON':  activarPersonaA();   break;
+      case 'PERSONA_A_ON':  activarPersonaA();    break;
       case 'PERSONA_A_OFF': desactivarPersonaA(); break;
-      case 'PERSONA_B_ON':  activarPersonaB();   break;
+      case 'PERSONA_B_ON':  activarPersonaB();    break;
       case 'PERSONA_B_OFF': desactivarPersonaB(); break;
-      case 'TOQUE':         activarConexion();   break;
+      case 'TOQUE':         activarConexion();    break;
     }
   }
 
