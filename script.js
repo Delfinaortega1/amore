@@ -41,6 +41,7 @@ if (MODO_PROYECTOR) {
     `;
     btnFS.addEventListener('click', () => {
       document.documentElement.requestFullscreen().catch(() => {});
+      desbloquearAudio();
       btnFS.remove();
     });
     document.body.appendChild(btnFS);
@@ -94,6 +95,46 @@ if (MODO_PROYECTOR) {
   });
 }
 
+// ============================================
+//   SONIDOS (archivos .mp3 reales)
+// ============================================
+// OJO: estos nombres tienen que coincidir letra por
+// letra (incluidos espacios) con los archivos en tu carpeta.
+const SONIDOS = {
+  personaA:        new Audio('sonido-1 Persona A .mp3'),
+  faltaOtra:       new Audio('sonido-2 Falta otra persona.mp3'),
+  personaB:        new Audio('sonido-3 Persona B.mp3'),
+  dosPersonas:     new Audio('sonido-4 Dos personas presentes.mp3'),
+  toquePlanta:     new Audio('sonido-5 Toque de la planta.mp3'),
+  conexionCompleta:new Audio('sonido-6 Conexión completa.mp3'),
+  desconexion:     new Audio('sonido-7 Desconexión .mp3')
+};
+
+// Precargar todos
+Object.values(SONIDOS).forEach(a => { a.preload = 'auto'; a.load(); });
+
+let audioDesbloqueado = false;
+
+// Los navegadores bloquean audio hasta que hay una interacción
+// real del usuario en la página. Esto lo "desbloquea" una sola vez.
+function desbloquearAudio() {
+  if (audioDesbloqueado) return;
+  audioDesbloqueado = true;
+  Object.values(SONIDOS).forEach(a => {
+    a.play().then(() => { a.pause(); a.currentTime = 0; }).catch(() => {});
+  });
+}
+window.addEventListener('click', desbloquearAudio, { once: true });
+window.addEventListener('keydown', desbloquearAudio, { once: true });
+window.addEventListener('touchstart', desbloquearAudio, { once: true });
+
+function reproducirSonido(nombre) {
+  const audio = SONIDOS[nombre];
+  if (!audio) return;
+  audio.currentTime = 0;
+  audio.play().catch(e => console.warn('No se pudo reproducir', nombre, e));
+}
+
 // ——— ESTADO GLOBAL ———
 let personaA = false;
 let personaB = false;
@@ -134,6 +175,7 @@ if (!MODO_PROYECTOR) {
   let bufferSerial = '';
 
   btnSerial.addEventListener('click', async () => {
+    desbloquearAudio();
     try {
       puerto = await navigator.serial.requestPort();
       await puerto.open({ baudRate: 9600 });
@@ -319,8 +361,13 @@ function activarPersonaA() {
   p1.classList.add('petalo-A'); p2.classList.add('petalo-A');
   limpiarClasesPetalo(p5); p5.classList.add('titilar');
   centroGlow.setAttribute('opacity','0.5'); centroGlow.setAttribute('r','8');
-  if (personaB) pasarAEsperandoToque();
-  else setEstado('Falta una segunda persona','activo');
+  if (personaB) {
+    pasarAEsperandoToque();
+  } else {
+    reproducirSonido('personaA');
+    setTimeout(() => reproducirSonido('faltaOtra'), 900);
+    setEstado('Falta una segunda persona','activo');
+  }
 }
 
 // ——— PERSONA B ———
@@ -332,8 +379,13 @@ function activarPersonaB() {
   p4.classList.add('petalo-B'); p5.classList.add('petalo-B');
   limpiarClasesPetalo(p3); p3.classList.add('titilar-b');
   centroGlow.setAttribute('opacity','0.6'); centroGlow.setAttribute('r','10');
-  if (personaA) pasarAEsperandoToque();
-  else setEstado('Falta una primera persona','activo');
+  if (personaA) {
+    pasarAEsperandoToque();
+  } else {
+    reproducirSonido('personaB');
+    setTimeout(() => reproducirSonido('faltaOtra'), 900);
+    setEstado('Falta una primera persona','activo');
+  }
 }
 
 // ——— DESACTIVAR A ———
@@ -376,6 +428,8 @@ function pasarAEsperandoToque() {
   sensor.classList.add('visible');
   setEstado('Toquen la planta','activo');
   centroGlow.setAttribute('opacity','0.8'); centroGlow.setAttribute('r','12');
+  reproducirSonido('dosPersonas');
+  setTimeout(() => reproducirSonido('toquePlanta'), 1300);
 }
 
 // ——— ESTADO 3B: CONEXIÓN ———
@@ -440,46 +494,12 @@ function lanzarParticulas() {
 
 // ——— SONIDO CONEXIÓN ———
 function reproducirSonidoConexion() {
-  try {
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    [220,277.18,329.63,415.30,523.25].forEach((freq,i) => {
-      setTimeout(() => {
-        const osc = ctx.createOscillator(), gain = ctx.createGain();
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(freq*1.003, ctx.currentTime+3);
-        gain.gain.setValueAtTime(0, ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime+0.3);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+4);
-        osc.start(ctx.currentTime); osc.stop(ctx.currentTime+4.5);
-      }, i*180);
-    });
-  } catch(e) {}
+  reproducirSonido('conexionCompleta');
 }
 
 // ——— SONIDO DESCONEXIÓN ———
 function reproducirSonidoDesconexion() {
-  try {
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    const bufferSize = ctx.sampleRate*2;
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) data[i] = Math.random()*2-1;
-    const noise = ctx.createBufferSource(); noise.buffer = buffer;
-    const filtro = ctx.createBiquadFilter();
-    filtro.type = 'bandpass'; filtro.frequency.value = 1200; filtro.Q.value = 0.5;
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.6, ctx.currentTime);
-    gain.gain.setValueAtTime(0.5, ctx.currentTime+0.3);
-    gain.gain.setValueAtTime(0.7, ctx.currentTime+0.6);
-    gain.gain.setValueAtTime(0.3, ctx.currentTime+0.9);
-    gain.gain.setValueAtTime(0.6, ctx.currentTime+1.1);
-    gain.gain.setValueAtTime(0.1, ctx.currentTime+1.4);
-    gain.gain.linearRampToValueAtTime(0, ctx.currentTime+2);
-    noise.connect(filtro); filtro.connect(gain); gain.connect(ctx.destination);
-    noise.start(ctx.currentTime); noise.stop(ctx.currentTime+2.1);
-  } catch(e) {}
+  reproducirSonido('desconexion');
 }
 
 window.AMORE = {
