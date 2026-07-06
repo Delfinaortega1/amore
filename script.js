@@ -95,19 +95,14 @@ if (MODO_PROYECTOR) {
   });
 }
 
-// ============================================
-//   SONIDOS (archivos .mp3 reales)
-// ============================================
-// OJO: estos nombres tienen que coincidir letra por
-// letra (incluidos espacios) con los archivos en tu carpeta.
 const SONIDOS = {
-  personaA:        new Audio('sonido-1 Persona A .mp3'),
-  faltaOtra:       new Audio('sonido-2 Falta otra persona.mp3'),
-  personaB:        new Audio('sonido-3 Persona B.mp3'),
-  dosPersonas:     new Audio('sonido-4 Dos personas presentes.mp3'),
-  toquePlanta:     new Audio('sonido-5 Toque de la planta.mp3'),
-  conexionCompleta:new Audio('sonido-6 Conexión completa.mp3'),
-  desconexion:     new Audio('sonido-7 Desconexión .mp3')
+  personaA:         new Audio('sonido1.mp3'), // Persona A
+  faltaOtra:        new Audio('sonido2.mp3'), // Falta otra persona
+  personaB:         new Audio('sonido3.mp3'), // Persona B
+  dosPersonas:      new Audio('sonido4.mp3'), // Dos personas presentes
+  toquePlanta:      new Audio('sonido5.mp3'), // Toque de la planta
+  conexionCompleta: new Audio('sonido6.mp3'), // Conexión completa
+  desconexion:      new Audio('sonido7.mp3')  // Desconexión
 };
 
 // Precargar todos
@@ -497,12 +492,6 @@ function reproducirSonidoConexion() {
   reproducirSonido('conexionCompleta');
 }
 
-// ——— SONIDO DESCONEXIÓN ———
-// (desactivado a pedido: ya no suena nada acá, se dejó la función
-// vacía para no romper los lugares que la llaman)
-function reproducirSonidoDesconexion() {
-  // sin sonido
-}
 
 window.AMORE = {
   presionA: activarPersonaA, presionB: activarPersonaB,
