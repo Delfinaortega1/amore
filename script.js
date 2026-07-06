@@ -498,8 +498,10 @@ function reproducirSonidoConexion() {
 }
 
 // ——— SONIDO DESCONEXIÓN ———
+// (desactivado a pedido: ya no suena nada acá, se dejó la función
+// vacía para no romper los lugares que la llaman)
 function reproducirSonidoDesconexion() {
-  reproducirSonido('desconexion');
+  // sin sonido
 }
 
 window.AMORE = {
