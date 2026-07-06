@@ -110,14 +110,21 @@ Object.values(SONIDOS).forEach(a => { a.preload = 'auto'; a.load(); });
 
 let audioDesbloqueado = false;
 
+// Audio silencioso dedicado SOLO a destrabar el audio del navegador.
+// Antes se usaba play()/pause() sobre los mismos objetos de SONIDOS,
+// lo que pisaba (cortaba a currentTime 0) el primer sonido real que
+// se intentaba reproducir justo después, en la misma interacción.
+// Con un audio aparte, los sonidos reales nunca se interrumpen.
+const audioSilencioso = new Audio(
+  "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA="
+);
+
 // Los navegadores bloquean audio hasta que hay una interacción
 // real del usuario en la página. Esto lo "desbloquea" una sola vez.
 function desbloquearAudio() {
   if (audioDesbloqueado) return;
   audioDesbloqueado = true;
-  Object.values(SONIDOS).forEach(a => {
-    a.play().then(() => { a.pause(); a.currentTime = 0; }).catch(() => {});
-  });
+  audioSilencioso.play().catch(() => {});
 }
 window.addEventListener('click', desbloquearAudio, { once: true });
 window.addEventListener('keydown', desbloquearAudio, { once: true });
